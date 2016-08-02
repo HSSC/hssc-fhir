@@ -21,7 +21,7 @@ To build and run this project, download or Clone the project from Github. The pr
   
   Ex: http://localhost:8080/fhir-hssc-Maven-Webapp/fhir/Patient/123456789
   
-   Note: This project contains jar dependencies for accessing Oracle's Master Person Index. The project build will fail if these dependencies are not foud in your local maven repository! 
+   Note: This project contains jar dependencies for accessing Oracle's Master Person Index. The project build will fail if these dependencies are not found in your local maven repository! 
   
   The missing jar files can be added to your local maven repository using the below command:
   
