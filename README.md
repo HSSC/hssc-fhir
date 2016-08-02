@@ -6,6 +6,7 @@ This project uses the HAPI FHIR implementation to build a RESTFul FHIR Server th
 To build and run this project, download or Clone the project from Github. The project can be built using the below commands
 
    i) cd fhir-hssc 
+  
   ii) mvn install 
   
   This will create a war file that can be deployed to any server.
@@ -15,11 +16,12 @@ To build and run this project, download or Clone the project from Github. The pr
   
   You can now access the Patients in OHMPI using the FHIR Server as:
   http://localhost:8080/fhir-hssc-Maven-Webapp/fhir/Patient/ResearchID
+  
   where the ResearchID is the patient's euid in OHMPI 
   
   Ex: http://localhost:8080/fhir-hssc-Maven-Webapp/fhir/Patient/123456789
   
-    Note: This project contains jar dependencies for accessing Oracle's Master Person Index. The project build will fail if these dependencies are not foud in your local maven repository! 
+   Note: This project contains jar dependencies for accessing Oracle's Master Person Index. The project build will fail if these dependencies are not foud in your local maven repository! 
   
   The missing jar files can be added to your local maven repository using the below command:
   
