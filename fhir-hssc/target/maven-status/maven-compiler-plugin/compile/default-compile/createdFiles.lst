@@ -1,6 +1,0 @@
-org\hssc\fhir\rest\provider\PatientResourceProvider.class
-org\hssc\fhir\rest\provider\RestfulPatientResourceProvider.class
-org\hssc\fhir\rest\servlet\JpaServerDemo.class
-org\hssc\fhir\rest\service\MpiPatient.class
-org\hssc\fhir\rest\config\FhirTesterConfig.class
-org\hssc\fhir\rest\provider\ConformanceProvider.class
