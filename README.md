@@ -1,7 +1,7 @@
 # hssc-fhir
 HSSC Java Server API for HL7 FHIR
 
-This project uses the HAPI FHIR implementation to build a RESTFul FHIR Server that interacts with HSSC's OHMPI! 
+This project uses the HAPI FHIR implementation to build a RESTFul FHIR Server that interacts with HSSC's OHMPI 
 
 To build and run this project, download or Clone the project from Github. The project can be built using the below commands
 
