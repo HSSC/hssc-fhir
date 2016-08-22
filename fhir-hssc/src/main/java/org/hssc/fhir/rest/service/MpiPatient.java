@@ -210,7 +210,9 @@ public class MpiPatient {
 	 fhir_pat.getIdentifier().get(0).setSystem("SSN");
 	 fhir_pat.getIdentifier().get(0).setValue(mpipatient.getSSN());
 	 fhir_pat.addName().addGiven(mpipatient.getFirstName());
+	 fhir_pat.getName().get(0).addGiven(mpipatient.getMiddleName());
 	 fhir_pat.getName().get(0).addFamily(mpipatient.getLastName());
+	 
 	 
 	 if(mpipatient.getGender() != null )
 	 {
@@ -291,6 +293,8 @@ public class MpiPatient {
 		  		addr_dt.setState(addr.getStateCode());
 		  	if(addr.getCountryCode() !=null)
 		  		addr_dt.setCountry(addr.getCountryCode());
+		  	if(addr.getCounty() !=null)
+		  		addr_dt.setDistrict(addr.getCounty());
 		  	if(addr.getAddressType() != null && addr.getAddressType().equalsIgnoreCase("HOME"))
 		      addr_dt.setUse(AddressUseEnum.HOME);
 			addr_list.add(addr_dt);
@@ -360,6 +364,7 @@ public EPathArrayList getFieldstoReturn() throws EPathException
     epaths.add("Enterprise.SystemSBR." + "Patient" + ".EUID");
     epaths.add("Enterprise.SystemSBR." + "Patient" + ".LastName");
     epaths.add("Enterprise.SystemSBR." + "Patient" + ".FirstName");
+    epaths.add("Enterprise.SystemSBR." + "Patient" + ".MiddleName");
     epaths.add("Enterprise.SystemSBR." + "Patient" +  ".Gender");
     epaths.add("Enterprise.SystemSBR." + "Patient" + ".SSN");
     epaths.add("Enterprise.SystemSBR." + "Patient" + ".Status");
@@ -372,6 +377,7 @@ public EPathArrayList getFieldstoReturn() throws EPathException
     epaths.add("Enterprise.SystemSBR." + "Patient" + ".Address" + ".AddressLine1");
     epaths.add("Enterprise.SystemSBR." + "Patient" + ".Address" + ".PostalCode");
     epaths.add("Enterprise.SystemSBR." + "Patient" + ".Address" + ".CountryCode");
+    epaths.add("Enterprise.SystemSBR." + "Patient" + ".Address" + ".County");
     epaths.add("Enterprise.SystemSBR." + "Patient" + ".Address" + ".StateCode");
     epaths.add("Enterprise.SystemSBR." + "Patient" + ".Address" + ".City");
     epaths.add("Enterprise.SystemSBR." + "Patient" + ".Address" + ".AddressType");
