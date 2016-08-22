@@ -26,7 +26,7 @@ public class ConformanceProvider extends ServerConformanceProvider{
 		
 	}
 	
-	
+	  @Override
 	  @Metadata
 		public Conformance getServerConformance(HttpServletRequest rs) {
 		    Conformance retVal = new Conformance();
@@ -34,6 +34,7 @@ public class ConformanceProvider extends ServerConformanceProvider{
 		   retVal.setPublisher("HSSC");
 		   retVal.setCopyright("HSSC");
 		   retVal.setDescription("Test Conformance Statement");
+		 	  
 		   
 //   Rest rest = retVal.addRest();
 //	rest.setMode(RestfulConformanceModeEnum.SERVER);
