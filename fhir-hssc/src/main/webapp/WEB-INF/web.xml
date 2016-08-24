@@ -11,6 +11,14 @@
 			org.springframework.web.context.support.AnnotationConfigWebApplicationContext
 		</param-value>
 	</context-param>
+	
+<!-- 	<context-param> -->
+<!-- <param-name>contextConfigLocation</param-name> -->
+<!-- <param-value> -->
+<!--     /WEB-INF/spring-security.xml -->
+<!-- </param-value> -->
+<!-- </context-param> -->
+	
 <!-- 	<context-param> -->
 <!-- 		<param-name>contextConfigLocation</param-name> -->
 <!-- 		<param-value> -->
@@ -104,6 +112,25 @@
 		<filter-name>CORS Filter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
+<!-- <filter> -->
+<!-- <filter-name>springSecurityFilterChain</filter-name> -->
+<!-- <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class> -->
+<!-- </filter> -->
+<!-- <filter-mapping> -->
+<!-- <filter-name>springSecurityFilterChain</filter-name> -->
+<!-- <url-pattern>/Patient/*</url-pattern> -->
+<!-- </filter-mapping> -->
 
+
+<!--Comment these lines to make webapp accessible from 8080 instead of using ssl on tomcat port 8443 -->
+<security-constraint>
+    <web-resource-collection>
+        <web-resource-name>HTTPSOnly</web-resource-name>
+        <url-pattern>/*</url-pattern>
+    </web-resource-collection>
+    <user-data-constraint>
+        <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+    </user-data-constraint>
+</security-constraint>
 
 </web-app>

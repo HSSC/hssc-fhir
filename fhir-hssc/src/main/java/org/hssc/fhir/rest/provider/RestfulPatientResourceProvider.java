@@ -17,6 +17,7 @@ import com.sun.mdm.index.objects.patient.PatientObject;
 
 //import ca.uhn.example.services.MpiPatient;
 import ca.uhn.fhir.model.api.ResourceMetadataKeyEnum;
+import ca.uhn.fhir.model.api.annotation.Description;
 import ca.uhn.fhir.model.api.annotation.SimpleSetter.Parameter;
 import ca.uhn.fhir.model.dstu2.composite.HumanNameDt;
 import ca.uhn.fhir.model.dstu2.resource.OperationOutcome;
@@ -40,6 +41,7 @@ import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.param.DateParam;
 import ca.uhn.fhir.rest.param.StringParam;
+
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
@@ -73,6 +75,7 @@ public class RestfulPatientResourceProvider implements IResourceProvider {
      * @throws Exception 
      */
     @Read()
+    
     public Patient getResourceById(@IdParam IdDt theId) throws Exception {
        
     	
@@ -99,7 +102,11 @@ public class RestfulPatientResourceProvider implements IResourceProvider {
      *    matching resources, or it may also be empty.
      * @throws Exception 
      */
+    
+    
+   
     @Search()
+    @Description(shortDefinition="My search",formalDefinition="Default Search")
     public List<Patient> getPatient(@RequiredParam(name = Patient.SP_FAMILY) StringParam theFamilyName,@RequiredParam(name = Patient.SP_GIVEN) StringParam theGivenName,@OptionalParam(name = Patient.SP_GENDER) StringParam theGender,@OptionalParam(name= Patient.SP_BIRTHDATE) StringParam birthdate) throws Exception 
     {
           List<Patient> pat_list=new ArrayList<Patient>();

@@ -30,6 +30,7 @@ import ca.uhn.fhir.model.dstu2.resource.Bundle;
 import ca.uhn.fhir.narrative.DefaultThymeleafNarrativeGenerator;
 import ca.uhn.fhir.rest.server.ETagSupportEnum;
 import ca.uhn.fhir.rest.server.EncodingEnum;
+import ca.uhn.fhir.rest.server.HardcodedServerAddressStrategy;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.RestfulServer;
 import ca.uhn.fhir.rest.server.interceptor.IServerInterceptor;
@@ -56,6 +57,10 @@ public class JpaServerDemo extends RestfulServer {
 		setResourceProviders(providers);
 		ConformanceProvider confProvider = new ConformanceProvider(this);
 		setServerConformanceProvider(confProvider);
+		
+//		BasicSecurityInterceptor security_inter=new BasicSecurityInterceptor();
+//		registerInterceptor(security_inter);
+	
 
 		/* 
 		 * We want to support FHIR DSTU2 format. This means that the server
@@ -138,8 +143,8 @@ public class JpaServerDemo extends RestfulServer {
 //		 * this doesn't always work. If you are setting links in your search bundles that
 //		 * just refer to "localhost", you might want to use a server address strategy:
 //		 */
-//		//setServerAddressStrategy(new HardcodedServerAddressStrategy("http://mydomain.com/fhir/baseDstu2"));
-registerInterceptor(new ResponseHighlighterInterceptor());
+//        setServerAddressStrategy(new HardcodedServerAddressStrategy("http://mydomain.com/fhir-hssc/fhir"));
+//registerInterceptor(new ResponseHighlighterInterceptor());
 		
 		/*
 		 * Tells the server to return pretty-printed responses by default

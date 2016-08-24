@@ -54,6 +54,7 @@ import ca.uhn.fhir.model.primitive.BooleanDt;
 import ca.uhn.fhir.model.primitive.CodeDt;
 import ca.uhn.fhir.model.primitive.DateDt;
 import ca.uhn.fhir.model.primitive.DateTimeDt;
+import ca.uhn.fhir.model.primitive.IdDt;
 import ca.uhn.fhir.model.primitive.StringDt;
 import ca.uhn.fhir.model.primitive.UriDt;
 import ca.uhn.fhir.rest.param.DateParam;
@@ -137,7 +138,7 @@ public class MpiPatient {
            PatientObject patient = null;
            patient = (PatientObject)sbr.getObject();
            systemCode = sbr.getSystemCode();
-           Patient fhir_pat=convertMPIPatient_FHIRPatient(patient);
+           Patient fhir_pat=convertMPIPatient_FHIRPatient(patient,euid);
            return fhir_pat;
        } 
      
@@ -186,8 +187,12 @@ public class MpiPatient {
      while(iterator.hasNext())
     {
    	  record = iterator.next();
-   	  Patient fhir_pat=convertMPIPatient_FHIRPatient((PatientObject)record.getObject());
-   	fhir_pat.setId(record.getEUID());
+   	  String euid=record.getEUID();
+   	  Patient fhir_pat=convertMPIPatient_FHIRPatient(((PatientObject)(record.getObject())),euid);
+//   	  IdDt fhir_id= new IdDt();
+//   	  fhir_id.setValueAsString(record.getEUID());
+//   	  fhir_pat.setId(fhir_id);
+   	// fhir_pat.setId(record.getEUID());
    	 pat_list.add(fhir_pat);
     }
      return pat_list;
@@ -196,16 +201,18 @@ public class MpiPatient {
  
  
  
- public Patient convertMPIPatient_FHIRPatient(PatientObject mpipatient) throws ObjectException
+ public Patient convertMPIPatient_FHIRPatient(PatientObject mpipatient,String euid) throws ObjectException
  { 
 	 
 	 Patient fhir_pat=new Patient();
-	 
+	 fhir_pat.setId(euid);
 	 fhir_pat.addIdentifier();
 	 fhir_pat.getIdentifier().get(0).setSystem("SSN");
 	 fhir_pat.getIdentifier().get(0).setValue(mpipatient.getSSN());
 	 fhir_pat.addName().addGiven(mpipatient.getFirstName());
+	 fhir_pat.getName().get(0).addGiven(mpipatient.getMiddleName());
 	 fhir_pat.getName().get(0).addFamily(mpipatient.getLastName());
+	 
 	 
 	 if(mpipatient.getGender() != null )
 	 {
@@ -221,6 +228,8 @@ public class MpiPatient {
 		 fhir_pat.setGender(AdministrativeGenderEnum.OTHER);
 	 else {}
 	 }
+	 
+	 
 	 if(mpipatient.getStatus() != null)
 		 fhir_pat.setActive(mpipatient.getStatus().equalsIgnoreCase("A"));
 	 
@@ -284,6 +293,8 @@ public class MpiPatient {
 		  		addr_dt.setState(addr.getStateCode());
 		  	if(addr.getCountryCode() !=null)
 		  		addr_dt.setCountry(addr.getCountryCode());
+		  	if(addr.getCounty() !=null)
+		  		addr_dt.setDistrict(addr.getCounty());
 		  	if(addr.getAddressType() != null && addr.getAddressType().equalsIgnoreCase("HOME"))
 		      addr_dt.setUse(AddressUseEnum.HOME);
 			addr_list.add(addr_dt);
@@ -307,17 +318,20 @@ public class MpiPatient {
     	  else if(phone.getPhoneType().equalsIgnoreCase("MOBILE"))
     		  phone_dt.setUse(ContactPointUseEnum.MOBILE);
     	  else {}
-    	  phone_dt.setSystem(ContactPointSystemEnum.EMAIL);
+    	  phone_dt.setSystem(ContactPointSystemEnum.PHONE);
     	  
     	  phone_list.add(phone_dt);
       }
-      fhir_pat.setTelecom(phone_list);
    
-      
       if(mpipatient.getEmail() != null)
       {
-    	
+    	ContactPointDt email= new ContactPointDt();
+    	email.setSystem(ContactPointSystemEnum.EMAIL);
+    	email.setValue(mpipatient.getEmail());
+    	phone_list.add(email);
       }
+      
+      fhir_pat.setTelecom(phone_list);
       
       fhir_pat.setManagingOrganization(new ResourceReferenceDt("HSSC"));
       
@@ -350,6 +364,7 @@ public EPathArrayList getFieldstoReturn() throws EPathException
     epaths.add("Enterprise.SystemSBR." + "Patient" + ".EUID");
     epaths.add("Enterprise.SystemSBR." + "Patient" + ".LastName");
     epaths.add("Enterprise.SystemSBR." + "Patient" + ".FirstName");
+    epaths.add("Enterprise.SystemSBR." + "Patient" + ".MiddleName");
     epaths.add("Enterprise.SystemSBR." + "Patient" +  ".Gender");
     epaths.add("Enterprise.SystemSBR." + "Patient" + ".SSN");
     epaths.add("Enterprise.SystemSBR." + "Patient" + ".Status");
@@ -362,6 +377,7 @@ public EPathArrayList getFieldstoReturn() throws EPathException
     epaths.add("Enterprise.SystemSBR." + "Patient" + ".Address" + ".AddressLine1");
     epaths.add("Enterprise.SystemSBR." + "Patient" + ".Address" + ".PostalCode");
     epaths.add("Enterprise.SystemSBR." + "Patient" + ".Address" + ".CountryCode");
+    epaths.add("Enterprise.SystemSBR." + "Patient" + ".Address" + ".County");
     epaths.add("Enterprise.SystemSBR." + "Patient" + ".Address" + ".StateCode");
     epaths.add("Enterprise.SystemSBR." + "Patient" + ".Address" + ".City");
     epaths.add("Enterprise.SystemSBR." + "Patient" + ".Address" + ".AddressType");
