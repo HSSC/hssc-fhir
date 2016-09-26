@@ -43,13 +43,18 @@ import ca.uhn.fhir.model.dstu2.composite.CodingDt;
 import ca.uhn.fhir.model.dstu2.composite.ContactPointDt;
 import ca.uhn.fhir.model.dstu2.composite.IdentifierDt;
 import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
+import ca.uhn.fhir.model.dstu2.resource.OperationOutcome;
+import ca.uhn.fhir.model.dstu2.resource.OperationOutcome.Issue;
 import ca.uhn.fhir.model.dstu2.resource.Patient;
 import ca.uhn.fhir.model.dstu2.resource.Patient.Communication;
+import ca.uhn.fhir.model.dstu2.valueset.AddressTypeEnum;
 import ca.uhn.fhir.model.dstu2.valueset.AddressUseEnum;
 import ca.uhn.fhir.model.dstu2.valueset.AdministrativeGenderEnum;
 import ca.uhn.fhir.model.dstu2.valueset.ContactPointSystemEnum;
 import ca.uhn.fhir.model.dstu2.valueset.ContactPointUseEnum;
+import ca.uhn.fhir.model.dstu2.valueset.IssueSeverityEnum;
 import ca.uhn.fhir.model.dstu2.valueset.MaritalStatusCodesEnum;
+import ca.uhn.fhir.model.dstu2.valueset.NameUseEnum;
 import ca.uhn.fhir.model.primitive.BooleanDt;
 import ca.uhn.fhir.model.primitive.CodeDt;
 import ca.uhn.fhir.model.primitive.DateDt;
@@ -58,6 +63,8 @@ import ca.uhn.fhir.model.primitive.IdDt;
 import ca.uhn.fhir.model.primitive.StringDt;
 import ca.uhn.fhir.model.primitive.UriDt;
 import ca.uhn.fhir.rest.param.DateParam;
+import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
+import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
 
 import java.util.Enumeration;
 //import ca.uhn.example.config;
@@ -169,8 +176,18 @@ public class MpiPatient {
       }
      if(dob !=null)
      {
-    	 SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd");
-         birthdate=df.parse(dob);
+    	 if(isValid(dob))
+    	 {
+    		 SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd");
+    		 birthdate=df.parse(dob);
+    	 }
+    	 else
+    	 {
+    		 OperationOutcome oo = new OperationOutcome();
+    	     oo.addIssue().setSeverity(IssueSeverityEnum.ERROR).setDiagnostics("Unable to parse date: Enter date as YYYY-MM-DD");
+       		 throw new InvalidRequestException("Incorrect birthdate entered: Enter date in YYYY-MM-DD format",oo);
+    	 }
+         
      }
      patobj.setBirthDate(birthdate);
      patobj.setGender(genderCode);
@@ -188,12 +205,13 @@ public class MpiPatient {
     {
    	  record = iterator.next();
    	  String euid=record.getEUID();
-   	  Patient fhir_pat=convertMPIPatient_FHIRPatient(((PatientObject)(record.getObject())),euid);
+   	  Patient fhir_pat=convertMPIPatient_FHIRPatient_Search(((PatientObject)(record.getObject())),euid);
 //   	  IdDt fhir_id= new IdDt();
 //   	  fhir_id.setValueAsString(record.getEUID());
 //   	  fhir_pat.setId(fhir_id);
    	// fhir_pat.setId(record.getEUID());
-   	 pat_list.add(fhir_pat);
+   	if (fhir_pat.getName().get(0).getFamily().get(0).toString().equalsIgnoreCase("TEST")) 			  
+   	    pat_list.add(fhir_pat);
     }
      return pat_list;
   
@@ -201,7 +219,8 @@ public class MpiPatient {
  
  
  
- public Patient convertMPIPatient_FHIRPatient(PatientObject mpipatient,String euid) throws ObjectException
+ @SuppressWarnings("deprecation")
+public Patient convertMPIPatient_FHIRPatient(PatientObject mpipatient,String euid) throws ObjectException
  { 
 	 
 	 Patient fhir_pat=new Patient();
@@ -212,6 +231,7 @@ public class MpiPatient {
 	 fhir_pat.addName().addGiven(mpipatient.getFirstName());
 	 fhir_pat.getName().get(0).addGiven(mpipatient.getMiddleName());
 	 fhir_pat.getName().get(0).addFamily(mpipatient.getLastName());
+	 fhir_pat.getName().get(0).setUse(NameUseEnum.OFFICIAL);
 	 
 	 
 	 if(mpipatient.getGender() != null )
@@ -226,7 +246,9 @@ public class MpiPatient {
 		 fhir_pat.setGender(AdministrativeGenderEnum.UNKNOWN);
 	 else if(mpipatient.getGender().equals("15"))
 		 fhir_pat.setGender(AdministrativeGenderEnum.OTHER);
-	 else {}
+	 else {
+		 
+	 	}
 	 }
 	 
 	 
@@ -284,19 +306,39 @@ public class MpiPatient {
 		  	AddressObject addr = (AddressObject)addr_iter.next();
 		  	AddressDt addr_dt=new AddressDt();
 		  	if(addr.getAddressLine1() != null)
-		  		addr_dt.addLine(addr.getAddressLine1());
+		  	{
+		  	  addr_dt.addLine(addr.getAddressLine1());
+		  	  
+		  	}
+		  	if(addr.getAddressLine2() != null)
+		  	{
+		  	  addr_dt.addLine(addr.getAddressLine2());
+		  	  
+		  	}
 		  	if(addr.getCity() != null)
-		  		addr_dt.setCity(addr.getCity());
+		  	{
+		  	 addr_dt.setCity(addr.getCity());
+		  	//addr_dt.setText(addr.getAddressLine1());
+		  	}
 		  	if(addr.getPostalCode() !=null)
+		  	{
 		  		addr_dt.setPostalCode(addr.getPostalCode());
+		  	}
 		  	if(addr.getStateCode() !=null)
+		  	{	
 		  		addr_dt.setState(addr.getStateCode());
+		  	}
 		  	if(addr.getCountryCode() !=null)
 		  		addr_dt.setCountry(addr.getCountryCode());
-		  	if(addr.getCounty() !=null)
-		  		addr_dt.setDistrict(addr.getCounty());
+//		  	if(addr.getCounty() !=null)
+//		  		addr_dt.setDistrict(addr.getCounty());
 		  	if(addr.getAddressType() != null && addr.getAddressType().equalsIgnoreCase("HOME"))
-		      addr_dt.setUse(AddressUseEnum.HOME);
+		  	{
+		  		addr_dt.setUse(AddressUseEnum.HOME);
+		  	     
+		  	}
+		  	addr_dt.setType(AddressTypeEnum.POSTAL);
+		  	//System.out.println("****Address:"+ addr_dt.+ "*********" );
 			addr_list.add(addr_dt);
 	  	}
 	  fhir_pat.setAddress(addr_list);
@@ -353,7 +395,11 @@ public String convertGender_Str_to_Code(String gender_str)
      		gender_code="14";
      	else if(gender_str.equalsIgnoreCase("indeterminate"))
      		gender_code="13"; 
-     	else {}
+     	else {
+     		OperationOutcome oo = new OperationOutcome();
+	     oo.addIssue().setSeverity(IssueSeverityEnum.ERROR).addLocation("Unknown gender code entered: Enter gender code as: male,female,other or unknown");
+		 throw new InvalidRequestException("Enter gender code as: male,female,other or unknown",oo);
+		 }
      	return gender_code;
     			
 }
@@ -375,9 +421,10 @@ public EPathArrayList getFieldstoReturn() throws EPathException
     epaths.add("Enterprise.SystemSBR." + "Patient" + ".Language");
     epaths.add("Enterprise.SystemSBR." + "Patient" + ".Email");
     epaths.add("Enterprise.SystemSBR." + "Patient" + ".Address" + ".AddressLine1");
+    epaths.add("Enterprise.SystemSBR." + "Patient" + ".Address" + ".AddressLine2");
     epaths.add("Enterprise.SystemSBR." + "Patient" + ".Address" + ".PostalCode");
     epaths.add("Enterprise.SystemSBR." + "Patient" + ".Address" + ".CountryCode");
-    epaths.add("Enterprise.SystemSBR." + "Patient" + ".Address" + ".County");
+    //epaths.add("Enterprise.SystemSBR." + "Patient" + ".Address" + ".County");
     epaths.add("Enterprise.SystemSBR." + "Patient" + ".Address" + ".StateCode");
     epaths.add("Enterprise.SystemSBR." + "Patient" + ".Address" + ".City");
     epaths.add("Enterprise.SystemSBR." + "Patient" + ".Address" + ".AddressType");
@@ -385,6 +432,86 @@ public EPathArrayList getFieldstoReturn() throws EPathException
     epaths.add("Enterprise.SystemSBR." + "Patient" + ".Phone" + ".PhoneNum" );
              return epaths;
 }
- 
+
+@SuppressWarnings("deprecation")
+public Patient convertMPIPatient_FHIRPatient_Search(PatientObject mpipatient,String euid) throws ObjectException
+{ 
+	 
+	 Patient fhir_pat=new Patient();
+	 fhir_pat.setId(euid);
+	 fhir_pat.addIdentifier();
+	 fhir_pat.getIdentifier().get(0).setSystem("SSN");
+	 fhir_pat.getIdentifier().get(0).setValue(mpipatient.getSSN());
+	 fhir_pat.addName().addGiven(mpipatient.getFirstName());
+	 fhir_pat.getName().get(0).addGiven(mpipatient.getMiddleName());
+	 fhir_pat.getName().get(0).addFamily(mpipatient.getLastName());
+	 fhir_pat.getName().get(0).setUse(NameUseEnum.OFFICIAL);
+	 
+	 
+	 if(mpipatient.getGender() != null )
+	 {
+	 if (mpipatient.getGender().equals("11"))
+		 fhir_pat.setGender(AdministrativeGenderEnum.FEMALE);
+	 else if(mpipatient.getGender().equals("12"))
+		 fhir_pat.setGender(AdministrativeGenderEnum.MALE);
+	 else if(mpipatient.getGender().equals("13"))
+		 fhir_pat.setGender(AdministrativeGenderEnum.UNKNOWN);
+	 else if(mpipatient.getGender().equals("14"))
+		 fhir_pat.setGender(AdministrativeGenderEnum.UNKNOWN);
+	 else if(mpipatient.getGender().equals("15"))
+		 fhir_pat.setGender(AdministrativeGenderEnum.OTHER);
+	 else {
+		 
+	 	}
+	 }
+	 
+	 
+	 if(mpipatient.getStatus() != null)
+		 fhir_pat.setActive(mpipatient.getStatus().equalsIgnoreCase("A"));
+	 
+	 if(mpipatient.getBirthDate() != null)
+		 fhir_pat.setBirthDate(new DateDt(mpipatient.getBirthDate()));
+	
+	 List<AddressDt> addr_list=new ArrayList<AddressDt>();
+	 
+	 Iterator addr_iter=null;
+	 if(mpipatient.getAddress() != null)
+		 addr_iter=mpipatient.getAddress().iterator();
+	  while(addr_iter != null && addr_iter.hasNext())
+	  	{
+		  	AddressObject addr = (AddressObject)addr_iter.next();
+		  	AddressDt addr_dt=new AddressDt();
+		  	if(addr.getAddressLine1() != null)
+		  	{
+		  	  addr_dt.addLine(addr.getAddressLine1());
+		  	  
+		  	}
+		  	
+		  	if(addr.getAddressType() != null && addr.getAddressType().equalsIgnoreCase("HOME"))
+		  	{
+		  		addr_dt.setUse(AddressUseEnum.HOME);
+		  	     
+		  	}
+		  	addr_dt.setType(AddressTypeEnum.POSTAL);
+		  	//System.out.println("****Address:"+ addr_dt.+ "*********" );
+			addr_list.add(addr_dt);
+	  	}
+	  fhir_pat.setAddress(addr_list);     
+     fhir_pat.setManagingOrganization(new ResourceReferenceDt("HSSC")); 
+ return fhir_pat;	 
+}
+
+public static boolean isValid(String text) {
+    if (text == null || !text.matches("\\d{4}-[01]\\d-[0-3]\\d"))
+        return false;
+    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+    df.setLenient(false);
+    try {
+        df.parse(text);
+        return true;
+    } catch (ParseException ex) {
+        return false;
+    }
+}
  }
    

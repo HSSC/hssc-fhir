@@ -33,7 +33,7 @@ public class ConformanceProvider extends ServerConformanceProvider{
 		   retVal=super.getServerConformance(rs);
 		   retVal.setPublisher("HSSC");
 		   retVal.setCopyright("HSSC");
-		   retVal.setDescription("Test Conformance Statement");
+		   retVal.setDescription("HSSC FHIR POC Conformance Statement");
 		 	  
 		   
 //   Rest rest = retVal.addRest();

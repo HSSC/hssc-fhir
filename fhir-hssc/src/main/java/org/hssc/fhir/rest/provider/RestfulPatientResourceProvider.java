@@ -107,7 +107,7 @@ public class RestfulPatientResourceProvider implements IResourceProvider {
    
     @Search()
     @Description(shortDefinition="My search",formalDefinition="Default Search")
-    public List<Patient> getPatient(@RequiredParam(name = Patient.SP_FAMILY) StringParam theFamilyName,@RequiredParam(name = Patient.SP_GIVEN) StringParam theGivenName,@OptionalParam(name = Patient.SP_GENDER) StringParam theGender,@OptionalParam(name= Patient.SP_BIRTHDATE) StringParam birthdate) throws Exception 
+    public List<Patient> getPatient(@Description(shortDefinition="A portion of the family name of the patient. This is a required search parameter.")@RequiredParam(name = Patient.SP_FAMILY) StringParam theFamilyName,@Description(shortDefinition="A portion of the first name of the patient. This is a required search parameter.")@RequiredParam(name = Patient.SP_GIVEN) StringParam theGivenName,@OptionalParam(name = Patient.SP_GENDER) StringParam theGender,@OptionalParam(name= Patient.SP_BIRTHDATE) StringParam birthdate) throws Exception 
     {
           List<Patient> pat_list=new ArrayList<Patient>();
     	MpiPatient mpi_pat=new MpiPatient();

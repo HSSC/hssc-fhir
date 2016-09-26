@@ -40,7 +40,7 @@ public class BasicSecurityInterceptor extends InterceptorAdapter
        * not typically how you would implement this in a production
        * system of course..
        */
-      if (!username.equals("admin") || !password.equals("password1234$")) {
+      if (!username.equals("username") || !password.equals("password")) {
          throw new AuthenticationException("Invalid username or password");
       }
        

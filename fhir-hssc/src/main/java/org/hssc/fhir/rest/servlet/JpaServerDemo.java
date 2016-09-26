@@ -143,7 +143,7 @@ public class JpaServerDemo extends RestfulServer {
 //		 * this doesn't always work. If you are setting links in your search bundles that
 //		 * just refer to "localhost", you might want to use a server address strategy:
 //		 */
-//        setServerAddressStrategy(new HardcodedServerAddressStrategy("http://mydomain.com/fhir-hssc/fhir"));
+         setServerAddressStrategy(new HardcodedServerAddressStrategy("http://myaddress"));
 //registerInterceptor(new ResponseHighlighterInterceptor());
 		
 		/*
