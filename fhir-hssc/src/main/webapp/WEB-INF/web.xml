@@ -122,7 +122,7 @@
 <!-- </filter-mapping> -->
 
 
-Comment these lines to make webapp accessible from 8080 instead of using ssl on tomcat port 8443
+<!--Comment these lines to make webapp accessible from 8080 instead of using ssl on tomcat port 8443-->
 <security-constraint>
     <web-resource-collection>
         <web-resource-name>HTTPSOnly</web-resource-name>
