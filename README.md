@@ -19,7 +19,7 @@ To build and run this project, download or Clone the project from Github. The pr
   
   where the ResearchID is the patient's euid in OHMPI 
   
-  Ex: http://localhost:8080/fhir-hssc-Maven-Webapp/fhir/Patient/123456789
+  Ex: http://localhost:8080/fhir-hssc/fhir/Patient/123456789
   
    Note: This project contains jar dependencies for accessing Oracle's Master Person Index. The project build will fail if these dependencies are not found in your local maven repository! 
   
