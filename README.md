@@ -31,7 +31,8 @@ To build and run this project, download or Clone the project from Github. The pr
   The groupId,artifactId and version information is available in the project's pom.xml file
   
   This version of the FHIR server can be accessed using https pnly and not http. To disable this, edit the web.xml to comment the below lines:
-  <security-constraint>
+ 
+ <security-constraint>
     <web-resource-collection>
         <web-resource-name>HTTPSOnly</web-resource-name>
         <url-pattern>/*</url-pattern>
