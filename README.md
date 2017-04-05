@@ -15,7 +15,7 @@ To build and run this project, download or Clone the project from Github. The pr
   mvn jetty:run
   
   You can now access the Patients in OHMPI using the FHIR Server as:
-  http://localhost:8080/fhir-hssc-Maven-Webapp/fhir/Patient/ResearchID
+  http://localhost:8080/fhir-hssc/fhir/Patient/ResearchID
   
   where the ResearchID is the patient's euid in OHMPI 
   
