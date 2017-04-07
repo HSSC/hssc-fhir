@@ -79,26 +79,26 @@
 		<dependency>
 			<groupId>com.sun.mdm.index.ejb.master.MasterController</groupId>
 			<artifactId>index-core</artifactId>
-			<version>1.0</version>
+			<version>4.0</version>
 		</dependency>
 
 
 		<dependency>
 			<groupId>com.sun.mdm.index.objects.patient</groupId>
 			<artifactId>mpi-client-patient</artifactId>
-			<version>1.0</version>
+			<version>4.0</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>com.weblogic.jndi</groupId>
 			<artifactId>wlthint3client</artifactId>
-			<version>1.0</version>
+			<version>4.0</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>net.java.hulp.i18n</groupId>
 			<artifactId>net.java.hulp.i18n-2.1-SNAPSHOT</artifactId>
-			<version>1.0</version>
+			<version>4.0</version>
 		</dependency>
 
 		<!-- HAPI-FHIR uses Logback for logging support. The logback library is included automatically by Maven as a part of the hapi-fhir-base dependency, but you also need to include a logging library. Logback 
